@@ -18,6 +18,8 @@ RUN export LANGUAGE=en_US.UTF-8 && \
 RUN mkdir /www/ && cd /www/ && git clone https://github.com/rtfd/readthedocs.org.git
 RUN pip install --upgrade pip
 RUN ln -sf /usr/local/bin/pip /usr/bin/pip
+RUN cd /www/readthedocs.org/ && touch readthedocs/settings/local_settings.py
+RUN cd /www/readthedocs.org/ && echo "EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'" >> readthedocs/settings/local_settings.py
 RUN cd /www/readthedocs.org/ && pip install -r pip_requirements.txt
 RUN cd /www/readthedocs.org/readthedocs && ./manage.py syncdb --noinput
 RUN cd /www/readthedocs.org/readthedocs && ./manage.py migrate 
