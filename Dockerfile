@@ -6,7 +6,7 @@ MAINTAINER  Darius Wiatrak "http://github.com/Drachenfels"
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y wget curl locales git python python-pip python-dev libxml2-dev libxslt-dev && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential python-setuptools libxslt1-dev zlib1g-dev
+    DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential python-setuptools libxslt1-dev zlib1g-dev mailutils sendmail
 
 # Configure locale
 RUN export LANGUAGE=en_US.UTF-8 && \
@@ -23,6 +23,8 @@ RUN cd /www/readthedocs.org && pip install -r requirements.txt
 RUN pip install requests==2.6.0 --upgrade
 RUN cd /www/readthedocs.org && touch readthedocs/settings/local_settings.py
 RUN cd /www/readthedocs.org && echo "EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'" >> readthedocs/settings/local_settings.py
+RUN cd /www/readthedocs.org && echo "EMAIL_HOST = 'localhost'" >> readthedocs/settings/local_settings.py
+RUN cd /www/readthedocs.org && echo "EMAIL_PORT = 4444" >> readthedocs/settings/local_settings.py
 RUN cd /www/readthedocs.org && ./manage.py migrate
 RUN cd /www/readthedocs.org && ./manage.py loaddata test_data
 RUN cd /www/readthedocs.org && echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@localhost', 'admin')" | ./manage.py shell
